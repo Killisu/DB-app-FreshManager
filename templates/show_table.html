@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>FrashManager</title>
+    <link href="../static/bulma/css/bulma.css" rel="stylesheet">
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<section class="section">
+    <div class="columns is-mobile is-multiline is-centered">
+        <div class="column">
+            <h1 class="is-size-2 has-text-centered">Данные из таблицы: {{ table_name }}</h1>
+        </div>
+        <div class="is-medium">
+            <a class="button is-success is-medium" href="/insertForm/{{ table_name.lower() }}">Вставка записи</a>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <table class="table is-fullwidth">
+            <thead>
+            <tr>
+                {% for key in data[0].keys() %}
+                <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in data %}
+            <tr>
+                {% for value in item.values() %}
+                <td>
+                    <a href="{{table_name.lower()}}/edit/{{ item.get('dish_order_id') or item.get('dish_ingredient_id') or item.get('order_employee_id') or item.get('dish_id') or item.get('ingredient_id') or item.get('order_id') or item.get('employee_id')}}">{{
+                        value }}</a></td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="container">
+            <p>Всего записей: {{ item_count }}</p>
+        </div>
+
+
+    <!-- Pagination buttons -->
+    {% if pagination.pages > 1 %}
+    <nav class="pagination is-centered" role="navigation">
+        <ul class="pagination-list">
+            {% if pagination.has_prev %}
+            <li>
+                <a href="?page={{ pagination.prev_num }}&per_page={{ pagination.per_page }}"
+                   class="pagination-previous">Назад</a>
+            </li>
+            {% endif %}
+
+            {% for num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
+            {% if num %}
+            {% if num == pagination.page %}
+            <li>
+                <a href="?page={{ num }}&per_page={{ pagination.per_page }}" class="pagination-link is-current">{{ num
+                    }}</a>
+            </li>
+            {% else %}
+            <li>
+                <a href="?page={{ num }}&per_page={{ pagination.per_page }}" class="pagination-link">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% else %}
+            <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}
+            <li>
+                <a href="?page={{ pagination.next_num }}&per_page={{ pagination.per_page }}" class="pagination-next">Вперёд</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    </div>
+</section>
+</body>
+</html>
